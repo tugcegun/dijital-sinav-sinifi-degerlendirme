@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijital Sınav Sınıfı Değerlendirme Anketi - Öğrenci</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(#EFECE3, #8FABD4 0%, #4A70A9 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background:#161A30;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .instructions h2 {
+            color: #1565c0;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .instructions p {
+            color: #424242;
+            margin-bottom: 8px;
+        }
+        
+        .personal-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .info-field label {
+            display: block;
+            font-weight: 600;
+            color: #424242;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .info-field input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-bottom: 2px solid #bdbdbd;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .info-field input:focus {
+            outline: none;
+            border-bottom-color: #2196F3;
+        }
+        
+        .scale-legend {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .scale-legend h3 {
+            color: #424242;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .scale-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .scale-option {
+            padding: 10px 5px;
+        }
+        
+        .scale-option .number {
+            font-weight: bold;
+            color: #2196F3;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .scale-option .label {
+            font-size: 11px;
+            color: #616161;
+            line-height: 1.3;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .question p {
+            color: #212121;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+        
+        .question-number {
+            color: #2196F3;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .likert-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 30px;
+        }
+        
+        .likert-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #757575;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .checkbox:hover {
+            border-color: #2196F3;
+            background: #e3f2fd;
+        }
+        
+        .checkbox.selected {
+            background: #2196F3;
+            border-color: #2196F3;
+        }
+        
+        .checkbox.selected::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .likert-option span {
+            font-size: 12px;
+            color: #757575;
+        }
+        
+        .open-questions {
+            background: #fffde7;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+        
+        .open-questions h3 {
+            color: #f57f17;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .open-question {
+            margin-bottom: 25px;
+        }
+        
+        .open-question p {
+            font-weight: 600;
+            color: #424242;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .open-question textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d4d4d4;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .open-question textarea:focus {
+            outline: none;
+            border-color: #fbc02d;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 2px solid #e0e0e0;
+            margin-top: 30px;
+        }
+        
+        .footer p {
+            color: #616161;
+            margin-bottom: 8px;
+        }
+        
+        .footer .thank-you {
+            font-weight: 600;
+            color: #2196F3;
+            font-size: 16px;
+        }
+        
+        .footer .copyright {
+            font-size: 12px;
+            color: #9e9e9e;
+            margin-top: 15px;
+        }
+        
+        .submit-button {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            display: block;
+            margin: 30px auto 0;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .submit-button:hover {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .submit-button:active {
+            transform: translateY(0);
+        }
+        
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .success-message.show {
+            display: flex;
+        }
+        
+        .success-content {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        .success-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+        }
+        
+        .success-content h2 {
+            color: #4CAF50;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .success-content p {
+            color: #616161;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .success-content .details {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #424242;
+        }
+        
+        .close-button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        
+        .close-button:hover {
+            background: #45a049;
+        }
+        
+        .warning-message {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            display: none;
+            animation: shake 0.5s;
+        }
+        
+        .warning-message.show {
+            display: block;
+        }
+        
+        .warning-message strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .warning-message ul {
+            margin: 10px 0 0 20px;
+            font-size: 14px;
+        }
+        
+        .warning-message li {
+            margin: 5px 0;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .question.incomplete {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #f44336;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .personal-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .scale-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .likert-scale {
+                padding-left: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const questions = document.querySelectorAll('.question');
+            
+            questions.forEach(question => {
+                const checkboxes = question.querySelectorAll('.checkbox');
+                
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('click', function() {
+                        // Aynı soru içindeki tüm checkbox'ların seçimini kaldır
+                        checkboxes.forEach(cb => cb.classList.remove('selected'));
+                        
+                        // Tıklanan checkbox'ı seçili yap
+                        this.classList.add('selected');
+                    });
+                });
+            });
+            
+            // Gönder butonu işlevi
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            const closeBtn = document.getElementById('closeBtn');
+            const warningMessage = document.getElementById('warningMessage');
+            const missingFieldsList = document.getElementById('missingFields');
+            
+            submitBtn.addEventListener('click', function() {
+                // Uyarı mesajını gizle
+                warningMessage.classList.remove('show');
+                missingFieldsList.innerHTML = '';
+                
+                // Tüm incomplete class'larını kaldır
+                document.querySelectorAll('.question.incomplete').forEach(q => {
+                    q.classList.remove('incomplete');
+                });
+                
+                const missingFields = [];
+                
+                // Kişisel bilgileri kontrol et
+                const nameInput = document.querySelectorAll('.info-field input')[0];
+                const classInput = document.querySelectorAll('.info-field input')[1];
+                const studentNoInput = document.querySelectorAll('.info-field input')[2];
+                const dateInput = document.querySelectorAll('.info-field input')[3];
+                
+                if (!nameInput.value.trim()) {
+                    missingFields.push('Ad Soyad alanı boş bırakılamaz');
+                }
+                if (!classInput.value.trim()) {
+                    missingFields.push('Sınıf alanı boş bırakılamaz');
+                }
+                if (!studentNoInput.value.trim()) {
+                    missingFields.push('Öğrenci No alanı boş bırakılamaz');
+                }
+                if (!dateInput.value) {
+                    missingFields.push('Tarih alanı boş bırakılamaz');
+                }
+                
+                // Tüm soruları kontrol et (1-14 arası Likert soruları)
+                questions.forEach((question, index) => {
+                    const selected = question.querySelector('.checkbox.selected');
+                    if (!selected) {
+                        missingFields.push(`Soru ${index + 1} cevaplanmadı`);
+                        question.classList.add('incomplete');
+                    }
+                });
+                
+                // Açık uçlu soruları kontrol et
+                const textareas = document.querySelectorAll('.open-question textarea');
+                textareas.forEach((textarea, index) => {
+                    if (!textarea.value.trim()) {
+                        missingFields.push(`Soru ${15 + index} (Açık uçlu soru) cevaplanmadı`);
+                    }
+                });
+                
+                // Eksik alan varsa uyarı göster
+                if (missingFields.length > 0) {
+                    missingFields.forEach(field => {
+                        const li = document.createElement('li');
+                        li.textContent = field;
+                        missingFieldsList.appendChild(li);
+                    });
+                    
+                    warningMessage.classList.add('show');
+                    
+                    // Uyarı mesajına kaydır
+                    warningMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    return;
+                }
+                
+                // Tüm alanlar doluysa başarı mesajını göster
+                successMessage.classList.add('show');
+                
+                // Gönderim zamanını ayarla
+                const now = new Date();
+                const timeString = now.toLocaleString('tr-TR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                document.getElementById('submitTime').textContent = timeString;
+                
+                // Rastgele referans numarası oluştur
+                const refNo = 'ANK' + Date.now().toString().slice(-8);
+                document.getElementById('referenceNo').textContent = refNo;
+                
+                // Burada gerçek uygulamada veri tabanına gönderim yapılır
+                // fetch('/api/submit-survey', { method: 'POST', body: formData })
+            });
+            
+            closeBtn.addEventListener('click', function() {
+                successMessage.classList.remove('show');
+                // Sayfayı yenile veya başka bir sayfaya yönlendir
+                // window.location.reload();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dijital Sınav Sınıfı Değerlendirme Anketi</h1>
+            <p>Öğrenci Görüş Formu</p>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h2>Değerli Öğrencimiz,</h2>
+                <p>Dijital Sınav Sınıfı projemiz kapsamında gerçekleştirdiğiniz sınav deneyiminizi değerlendirmeniz için bu anketi hazırladık. Görüşleriniz sistemimizi geliştirmemize yardımcı olacaktır.</p>
+                <p style="font-weight: 600;">Lütfen her ifade için size en uygun seçeneği işaretleyiniz.</p>
+            </div>
+            
+            <div class="personal-info">
+                <div class="info-field">
+                    <label>Adınız Soyadınız:</label>
+                    <input type="text" placeholder="">
+                </div>
+                <div class="info-field">
+                    <label>Sınıfınız:</label>
+                    <input type="text" placeholder="">
+                </div>
+                <div class="info-field">
+                    <label>Öğrenci No:</label>
+                    <input type="text" placeholder="">
+                </div>
+                <div class="info-field">
+                    <label>Tarih:</label>
+                    <input type="date" placeholder="">
+                </div>
+            </div>
+            
+            <div class="scale-legend">
+                <h3>Değerlendirme Ölçeği:</h3>
+                <div class="scale-options">
+                    <div class="scale-option">
+                        <div class="number">1</div>
+                        <div class="label">Kesinlikle Katılmıyorum</div>
+                    </div>
+                    <div class="scale-option">
+                        <div class="number">2</div>
+                        <div class="label">Katılmıyorum</div>
+                    </div>
+                    <div class="scale-option">
+                        <div class="number">3</div>
+                        <div class="label">Kararsızım</div>
+                    </div>
+                    <div class="scale-option">
+                        <div class="number">4</div>
+                        <div class="label">Katılıyorum</div>
+                    </div>
+                    <div class="scale-option">
+                        <div class="number">5</div>
+                        <div class="label">Kesinlikle Katılıyorum</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">1.</span> Sınav kabini sessiz ve rahat bir ortam sağladı.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">2.</span> Ekran ve klavye kullanımı kolaydı.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">3.</span> Sınav sisteminde teknik sorun yaşamadım.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">4.</span> Yalnızca sınav değil, ders kaynaklarına hızlıca ulaşabileceğim bir ortam sağlandı.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">5.</span> Geleneksel sınava göre dijital sınavı tercih ederim.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">6.</span> Sınav süresince dikkatimi toplayabildiğim bir ortamda oldum.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">7.</span> Dijital sınav sistemi adil ve güvenilirdi.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">8.</span> Sınav öncesi verilen teknik eğitim yeterliydi.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">9.</span> Ekran parlaklığı ve yazı boyutu gözlerimi yormadı.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">10.</span> Sınav kaydının yapılması beni rahatsız etmedi.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">11.</span> Sorular arasında gezinmek (ileri-geri) kolaydı.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">12.</span> Sınav sırasında kendimi güvende hissettim.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">13.</span> Dijital sınav deneyimimden genel olarak memnunum.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p><span class="question-number">14.</span> Bu sistemi arkadaşlarıma önerebilirim.</p>
+                <div class="likert-scale">
+                    <div class="likert-option"><div class="checkbox"></div><span>1</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>2</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>3</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>4</span></div>
+                    <div class="likert-option"><div class="checkbox"></div><span>5</span></div>
+                </div>
+            </div>
+            
+            <div class="open-questions">
+                <h3>Ek Görüşleriniz:</h3>
+                
+                <div class="open-question">
+                    <p>15. Dijital sınav deneyiminizde en çok beğendiğiniz özellik neydi?</p>
+                    <textarea placeholder="Lütfen görüşlerinizi buraya yazınız..."></textarea>
+                </div>
+                
+                <div class="open-question">
+                    <p>16. Sistemde geliştirmemizi önerdiğiniz bir konu var mı?</p>
+                    <textarea placeholder="Lütfen görüşlerinizi buraya yazınız..."></textarea>
+                </div>
+                
+                <div class="open-question">
+                    <p>17. Diğer görüş ve önerileriniz:</p>
+                    <textarea placeholder="Lütfen görüşlerinizi buraya yazınız..."></textarea>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div class="warning-message" id="warningMessage">
+                    <strong>⚠️ Uyarı: Lütfen tüm alanları doldurunuz!</strong>
+                    <ul id="missingFields"></ul>
+                </div>
+                
+                <p class="thank-you">Katılımınız için teşekkür ederiz!</p>
+                <p>Görüşleriniz okulumuzun dijital dönüşüm sürecine büyük katkı sağlayacaktır.</p>
+                <p class="copyright">© 2025 Dijital Sınav Sınıfı Projesi | Jones (2005) Teknoloji Planlama Modeli</p>
+                
+                <button class="submit-button" id="submitBtn">Anketi Gönder</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="success-message" id="successMessage">
+        <div class="success-content">
+            <div class="success-icon"></div>
+            <h2>Anket Başarıyla Gönderildi!</h2>
+            <p>Değerli görüşleriniz için teşekkür ederiz.</p>
+            <div class="details">
+                <p><strong>Gönderim Zamanı:</strong> <span id="submitTime"></span></p>
+                <p><strong>Referans No:</strong> <span id="referenceNo"></span></p>
+            </div>
+            <p>Anketiniz başarıyla sisteme kaydedilmiştir ve değerlendirme sürecine alınmıştır.</p>
+            <button class="close-button" id="closeBtn">Kapat</button>
+        </div>
+    </div>
+</body>
+</html>
